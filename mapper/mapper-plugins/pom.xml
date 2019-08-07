@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.mapper</groupId>
+		<artifactId>mapper</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.mapper.plugins</groupId>
+	<artifactId>mapper-plugins</artifactId>
+	<packaging>pom</packaging>
+	<name>mapper-plugins-parent</name>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- Override below properties in each plugin's pom.xml -->
+		<plugin.id />
+		<plugin.class />
+		<plugin.version />
+		<plugin.provider />
+		<plugin.dependencies />
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>${project.artifactId}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<attach>false</attach>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						<manifestEntries>
+							<Plugin-Id>${plugin.id}</Plugin-Id>
+							<Plugin-Version>${plugin.version}</Plugin-Version>
+							<Plugin-Provider>${plugin.provider}</Plugin-Provider>
+							<Plugin-Class>${plugin.class}</Plugin-Class>
+							<Plugin-Dependencies>${plugin.dependencies}</Plugin-Dependencies>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<modules>
+		<module>grafana-plugin</module>
+		<module>telegraf-plugin</module>
+		<module>esper-plugin</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j</artifactId>
+			<version>${pf4j.version}</version>
+			<!-- !!! VERY IMPORTANT -->
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mapper</groupId>
+			<artifactId>mapper-api</artifactId>
+			<version>${mapper-api.version}</version>
+			<!-- !!! VERY IMPORTANT -->
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>

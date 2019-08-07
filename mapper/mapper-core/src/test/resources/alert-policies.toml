@@ -1,0 +1,14 @@
+[[alert]]
+	id = "1" 
+	[[alert.condition]]
+		name = "condition1"
+		placeLocally = true 
+		
+[[alert]]
+	id = "2"
+	[[alert.condition]]
+		name = "condition1"
+		placeLocally = true
+	[[alert.condition]]
+		name = "condition2"
+		placeLocally = false

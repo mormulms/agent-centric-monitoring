@@ -1,0 +1,10 @@
+{
+  "/api/auth": {
+    "target": "http://localhost:8082",
+    "secure": false
+  },
+  "/api/file": {
+    "target": "http://localhost:8082",
+    "secure": false
+  }
+}

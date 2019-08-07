@@ -1,0 +1,45 @@
+<ngx-graph #graph class="chart-container" [view]="view" [enableZoom]="enableZoom" [autoZoom]="autoZoom"
+           [panOnZoom]="panOnZoom" [autoCenter]="autoCenter" [legend]="false"
+           [links]="currentGraph.links" [nodes]="currentGraph.nodes" [nodeWidth]="'200'" [scheme]="colorScheme"
+           [orientation]="orientation" [curve]="curve" [update$]="update$" [center$]="center$" [zoomToFit$]="zoomToFit$"
+           [groupResultsBy]="getNodeTypeFn" [customColors]="customColors" (select)="select($event)"
+           [draggingEnabled]="false">
+
+<ng-template #defsTemplate xmlns:svg="http://www.w3.org/1999/html">
+  <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+    <path d="M0,-5L10,0L0,5" class="arrow-head"></path>
+  </svg:marker>
+
+  <svg:marker id="selected-arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+    <path d="M0,-5L10,0L0,5" class="selected-arrow-head"></path>
+  </svg:marker>
+
+  <fa-icon [icon]="faSignInAlt" symbol="input"></fa-icon>
+  <fa-icon [icon]="faSignOutAlt" symbol="output"></fa-icon>
+  <fa-icon [icon]="faCogs" symbol="processor"></fa-icon>
+  <fa-icon [icon]="faCogs" symbol="aggregator"></fa-icon>
+
+  <svg:filter *ngFor="let shadow of shadows; trackBy: shadowTrackByFn" [attr.id]="shadow.name + 'shadow'" height="130%">
+    <feDropShadow dx="0" dy="0"
+                  [attr.stdDeviation]="shadow.stdDeviation"
+                  [attr.flood-color]="shadow.color"
+                  [attr.flood-opacity]="shadow.opacity">
+    </feDropShadow>
+  </svg:filter>
+</ng-template>
+
+<ng-template #nodeTemplate let-node xmlns:svg="http://www.w3.org/1999/html">
+  <svg:g app-node [node]="node" class="node" [class.selected]="node.selected"
+         [style.filter]="node.selected ? 'url(#' + node.nodeType + 'shadow)' : 'url(#dropshadow)'">
+  </svg:g>
+</ng-template>
+
+<ng-template #linkTemplate let-link xmlns:svg="http://www.w3.org/1999/html">
+  <svg:g class="edge" [class.selected]="link.id === selectedLink.id" (click)="selectEdge(link)">
+    <path class="line" [attr.marker-end]="(link.id === selectedLink.id) ? 'url(#selected-arrow)' : 'url(#arrow)'">
+    </path>
+    <title>Select edge</title>
+  </svg:g>
+</ng-template>
+
+</ngx-graph>

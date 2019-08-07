@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a [routerLink]="['/']" class="navbar-brand">MonA Template Editor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li routerLinkActive="active" class="nav-item">
+        <a [routerLink]="['/template']" class="nav-link">
+          <fa-icon [icon]="faSitemap" rotate="270"></fa-icon>
+          Template View
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [routerLink]="['/settings']" class="nav-link">
+          <fa-icon [icon]="faCog"></fa-icon>
+          Settings
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container-fluid wrapper">
+  <router-outlet></router-outlet>
+</div>

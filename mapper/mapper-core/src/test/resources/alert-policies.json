@@ -1,0 +1,17 @@
+[ {
+  "id" : "test",
+  "policies" : null,
+  "alertTree" : {
+    "id" : "test1",
+    "policies" : null,
+    "children" : [ {
+      "id" : "test11",
+      "policies" : null,
+      "children" : null
+    }, {
+      "id" : "test12",
+      "policies" : null,
+      "children" : null
+    } ]
+  }
+} ]

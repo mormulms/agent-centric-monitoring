@@ -1,0 +1,65 @@
+$text-color: #222222;
+$title-color: #ffffff;
+$edge-color: #222222;
+$selected-color: #b02e0c;
+
+:host ::ng-deep {
+  .ng-fa-icon path {
+    fill: $title-color;
+  }
+
+  .graph {
+    path.arrow-head {
+      fill: $edge-color;
+    }
+
+    path.selected-arrow-head {
+      fill: $selected-color;
+    }
+
+    .edge {
+      cursor: pointer;
+      path.line {
+        stroke: $edge-color;
+        stroke-width: 2;
+      }
+      text.edge-label {
+        stroke: $edge-color;
+      }
+    }
+
+    .edge.selected {
+      path.line {
+        stroke: $selected-color;
+      }
+
+      text.edge-label {
+        stroke: $selected-color;
+      }
+    }
+
+    .nodes {
+      text {
+        fill: $text-color;
+        font-size: 1rem;
+      }
+
+      text.node-title {
+        fill: $title-color;
+        font-size: 1.5rem;
+      }
+    }
+
+    .node {
+      cursor: pointer;
+      rect {
+        stroke: $edge-color;
+        stroke-width: 2;
+      }
+    }
+
+    .node.selected rect {
+      stroke: $selected-color;
+    }
+  }
+}

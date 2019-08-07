@@ -1,0 +1,1569 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://marc92w.github.io/agent-templates/schema.json",
+  "title": "Monitoring Agent template",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "default": "https://marc92w.github.io/agent-templates/schema.json"
+    },
+    "id": {
+      "$ref": "#/definitions/TemplateId"
+    },
+    "name": {
+      "type": "string"
+    },
+    "config": {
+      "$ref": "#/definitions/TemplateConfig"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Input"
+      }
+    },
+    "processors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Processor"
+      }
+    },
+    "aggregators": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Aggregator"
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Output"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "inputs",
+    "processors",
+    "aggregators",
+    "outputs"
+  ],
+  "definitions": {
+    "TemplateConfig": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "$ref": "#/definitions/Interval"
+        },
+        "flush_interval": {
+          "$ref": "#/definitions/Interval"
+        }
+      },
+      "additionalProperties": true,
+      "title": "Template node configuration"
+    },
+    "Input": {
+      "type": "object",
+      "required": [
+        "_type"
+      ],
+      "properties": {
+        "_type": {
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "IGenericInput"
+              ],
+              "description": "Generic Input"
+            },
+            {
+              "enum": [
+                "ICPUInput"
+              ],
+              "description": "CPU Input"
+            },
+            {
+              "enum": [
+                "IMemoryInput"
+              ],
+              "description": "Memory Input"
+            },
+            {
+              "enum": [
+                "IProcStatInput"
+              ],
+              "description": "Process Stats Input"
+            }
+          ],
+          "default": "ICPUInput",
+          "widget": "select"
+        },
+        "IGenericInput": {
+          "$ref": "#/definitions/GenericInput"
+        },
+        "ICPUInput": {
+          "$ref": "#/definitions/CPUInput"
+        },
+        "IMemoryInput": {
+          "$ref": "#/definitions/MemoryInput"
+        },
+        "IProcStatInput": {
+          "$ref": "#/definitions/ProcStatInput"
+        }
+      }
+    },
+    "GenericInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/InputId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        },
+        "config": {
+          "$ref": "#/definitions/InputConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Generic Input",
+      "visibleIf": {
+        "_type": [
+          "IGenericInput"
+        ]
+      }
+    },
+    "InputConfig": {
+      "title": "Configuration",
+      "type": "object",
+      "properties": {
+        "interval": {
+          "$ref": "#/definitions/Interval"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "interval"
+      ]
+    },
+    "CPUInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/InputId"
+        },
+        "name": {
+          "type": "string",
+          "default": "cpu"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "cpu"
+          ],
+          "default": "cpu",
+          "widget": "hidden"
+        },
+        "config": {
+          "$ref": "#/definitions/CPUConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "CPU Input",
+      "visibleIf": {
+        "_type": [
+          "ICPUInput"
+        ]
+      }
+    },
+    "CPUConfig": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "$ref": "#/definitions/Interval"
+        },
+        "percpu": {
+          "type": "boolean",
+          "default": true,
+          "description": "report per-cpu"
+        },
+        "totalcpu": {
+          "type": "boolean",
+          "default": true,
+          "description": "report total system cpu stats"
+        },
+        "collect_cpu_time": {
+          "type": "boolean",
+          "default": false,
+          "description": "collect raw CPU time"
+        },
+        "report_active": {
+          "type": "boolean",
+          "default": false,
+          "description": "report sum of non-idle CPU states"
+        }
+      },
+      "additionalProperties": true
+    },
+    "MemoryInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/InputId"
+        },
+        "name": {
+          "type": "string",
+          "default": "memory"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "mem"
+          ],
+          "default": "mem",
+          "widget": "hidden"
+        },
+        "config": {
+          "$ref": "#/definitions/MemoryConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Memory Input",
+      "visibleIf": {
+        "_type": [
+          "IMemoryInput"
+        ]
+      }
+    },
+    "MemoryConfig": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "$ref": "#/definitions/Interval"
+        }
+      },
+      "additionalProperties": true
+    },
+    "ProcStatInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/InputId"
+        },
+        "name": {
+          "type": "string",
+          "default": "process stats"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "procstat"
+          ],
+          "default": "procstat",
+          "widget": "hidden"
+        },
+        "config": {
+          "$ref": "#/definitions/ProcStatConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Memory Input",
+      "visibleIf": {
+        "_type": [
+          "IProcStatInput"
+        ]
+      }
+    },
+    "ProcStatConfig": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "$ref": "#/definitions/Interval"
+        },
+        "systemd_unit": {
+          "title": "systemd unit",
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "NextProcessor": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "$ref": "#/definitions/RefString"
+        },
+        "value": {
+          "$ref": "#/definitions/NextProcessorValue"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "$type",
+        "value"
+      ],
+      "visibleIf": {
+        "_type": [
+          "INextProcessor"
+        ]
+      }
+    },
+    "NextProcessorValue": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "processor"
+          ],
+          "title": "Type",
+          "default": "processor",
+          "widget": "hidden"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]+$",
+          "title": "Ref Id"
+        }
+      },
+      "additionalItems": false
+    },
+    "NextAggregator": {
+      "type": "object",
+      "required": [
+        "$type",
+        "value"
+      ],
+      "properties": {
+        "$type": {
+          "$ref": "#/definitions/RefString"
+        },
+        "value": {
+          "$ref": "#/definitions/NextAggregatorValue"
+        }
+      },
+      "additionalProperties": false,
+      "visibleIf": {
+        "_type": [
+          "INextAggregator"
+        ]
+      }
+    },
+    "NextAggregatorValue": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "aggregator"
+          ],
+          "title": "Type",
+          "default": "aggregator",
+          "widget": "hidden"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]+$",
+          "title": "Ref Id"
+        }
+      },
+      "additionalItems": false
+    },
+    "NextOutput": {
+      "type": "object",
+      "properties": {
+        "$type": {
+          "$ref": "#/definitions/RefString"
+        },
+        "value": {
+          "$ref": "#/definitions/NextOutputValue"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "$type",
+        "value"
+      ],
+      "visibleIf": {
+        "_type": [
+          "INextOutput"
+        ]
+      }
+    },
+    "NextOutputValue": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "output"
+          ],
+          "title": "Type",
+          "default": "output",
+          "widget": "hidden"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]+$",
+          "title": "Ref Id"
+        }
+      },
+      "additionalItems": false
+    },
+    "Processor": {
+      "type": "object",
+      "required": [
+        "_type"
+      ],
+      "properties": {
+        "_type": {
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "IComparisonProcessor"
+              ],
+              "description": "Comparison"
+            },
+            {
+              "enum": [
+                "IRangeProcessor"
+              ],
+              "description": "Range"
+            },
+            {
+              "enum": [
+                "ICalculationProcessor"
+              ],
+              "description": "Calculation"
+            },
+            {
+              "enum": [
+                "IGenericProcessor"
+              ],
+              "description": "Generic"
+            }
+          ],
+          "default": "ICalculationProcessor",
+          "widget": "select"
+        },
+        "IComparisonProcessor": {
+          "$ref": "#/definitions/ComparisonProcessor"
+        },
+        "IRangeProcessor": {
+          "$ref": "#/definitions/RangeProcessor"
+        },
+        "ICalculationProcessor": {
+          "$ref": "#/definitions/CalculationProcessor"
+        },
+        "IGenericProcessor": {
+          "$ref": "#/definitions/GenericProcessor"
+        }
+      }
+    },
+    "Aggregator": {
+      "type": "object",
+      "required": [
+        "_type"
+      ],
+      "properties": {
+        "_type": {
+          "title": "Aggregator type",
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "IStatsAggregator"
+              ],
+              "description": "Statistic"
+            },
+            {
+              "enum": [
+                "ILogicAggregator"
+              ],
+              "description": "Logic"
+            },
+            {
+              "enum": [
+                "IGenericAggregator"
+              ],
+              "description": "Generic"
+            }
+          ],
+          "default": "IStatsAggregator",
+          "widget": "select"
+        },
+        "IStatsAggregator": {
+          "$ref": "#/definitions/StatsAggregator"
+        },
+        "ILogicAggregator": {
+          "$ref": "#/definitions/LogicAggregator"
+        },
+        "IGenericAggregator": {
+          "$ref": "#/definitions/GenericAggregator"
+        }
+      }
+    },
+    "GenericAggregator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/AggregatorId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        },
+        "config": {
+          "$ref": "#/definitions/AggregatorConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "next"
+      ],
+      "title": "Generic Aggregator",
+      "visibleIf": {
+        "_type": [
+          "IGenericAggregator"
+        ]
+      }
+    },
+    "AggregatorConfig": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/definitions/Period"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "period"
+      ]
+    },
+    "GenericProcessor": {
+      "title": "Generic Processor",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/ProcessorId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        },
+        "config": {
+          "$ref": "#/definitions/ProcessorConfig"
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "next"
+      ],
+      "visibleIf": {
+        "_type": [
+          "IGenericProcessor"
+        ]
+      }
+    },
+    "ComparisonProcessor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/ProcessorId"
+        },
+        "name": {
+          "type": "string",
+          "default": "comparison"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "comparison"
+          ],
+          "default": "comparison",
+          "widget": "hidden"
+        },
+        "config": {
+          "title": "Configuration",
+          "type": "object",
+          "properties": {
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "title": "Field name"
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Fields to check"
+            },
+            "comparison": {
+              "title": "Comparison type",
+              "type": "string",
+              "oneOf": [
+                {
+                  "enum": [
+                    "lessThan"
+                  ],
+                  "description": "less than"
+                },
+                {
+                  "enum": [
+                    "equal"
+                  ],
+                  "description": "equal"
+                },
+                {
+                  "enum": [
+                    "unequal"
+                  ],
+                  "description": "unequal"
+                },
+                {
+                  "enum": [
+                    "greaterThan"
+                  ],
+                  "description": "greater than"
+                }
+              ],
+              "default": "greaterThan",
+              "widget": "select"
+            },
+            "comparisonValue": {
+              "$ref": "#/definitions/Operand"
+            }
+          },
+          "required": [
+            "comparison",
+            "comparisonValue"
+          ]
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Comparison Processor",
+      "visibleIf": {
+        "_type": [
+          "IComparisonProcessor"
+        ]
+      }
+    },
+    "RangeProcessor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/ProcessorId"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "default": "range"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "range"
+          ],
+          "title": "Type",
+          "default": "range",
+          "widget": "hidden"
+        },
+        "config": {
+          "title": "Configuration",
+          "type": "object",
+          "properties": {
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "title": "Field name"
+              },
+              "uniqueItems": true,
+              "minItems": 1,
+              "description": "Fields to check"
+            },
+            "lowerBound": {
+              "$ref": "#/definitions/Operand"
+            },
+            "lowerInclusive": {
+              "type": "boolean",
+              "description": "Lower bound inclusive",
+              "default": true
+            },
+            "upperBound": {
+              "$ref": "#/definitions/Operand"
+            },
+            "upperInclusive": {
+              "type": "boolean",
+              "description": "Upper bound inclusive",
+              "default": true
+            },
+            "outside": {
+              "type": "boolean",
+              "description": "outside of range",
+              "default": false
+            }
+          },
+          "required": [
+            "upper",
+            "lower"
+          ]
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Range Processor",
+      "visibleIf": {
+        "_type": [
+          "IRangeProcessor"
+        ]
+      }
+    },
+    "CalculationProcessor": {
+      "title": "Calculation Processor",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/ProcessorId"
+        },
+        "name": {
+          "type": "string",
+          "default": "calculation"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string",
+          "enum": [
+            "calculation"
+          ],
+          "default": "calculation",
+          "widget": "hidden"
+        },
+        "config": {
+          "description": "Configuration",
+          "type": "object",
+          "properties": {
+            "result": {
+              "$ref": "#/definitions/ResultOperand"
+            }
+          },
+          "required": [
+            "result"
+          ]
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "visibleIf": {
+        "_type": [
+          "ICalculationProcessor"
+        ]
+      }
+    },
+    "Operand": {
+      "type": "object",
+      "required": [
+        "_type"
+      ],
+      "properties": {
+        "_type": {
+          "title": "Operand type",
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "IMetricOperand"
+              ],
+              "description": "Metric"
+            },
+            {
+              "enum": [
+                "ILiteralOperand"
+              ],
+              "description": "Literal"
+            }
+          ],
+          "default": "IMetricOperand",
+          "widget": "select"
+        },
+        "IMetricOperand": {
+          "$ref": "#/definitions/MetricOperand"
+        },
+        "ILiteralOperand": {
+          "$ref": "#/definitions/LiteralOperand"
+        }
+      }
+    },
+    "MetricOperand": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Metric name"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "visibleIf": {
+        "_type": [
+          "IMetricOperand"
+        ]
+      }
+    },
+    "LiteralOperand": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "title": "Value",
+          "widget": "float"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "visibleIf": {
+        "_type": [
+          "ILiteralOperand"
+        ]
+      }
+    },
+    "ResultOperand": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "result"
+        },
+        "dropOriginal": {
+          "type": "boolean",
+          "default": false
+        },
+        "lhs": {
+          "$ref": "#/definitions/Operand"
+        },
+        "operation": {
+          "title": "Operation",
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "+"
+              ],
+              "description": "+"
+            },
+            {
+              "enum": [
+                "-"
+              ],
+              "description": "-"
+            },
+            {
+              "enum": [
+                "*"
+              ],
+              "description": "*"
+            },
+            {
+              "enum": [
+                "/"
+              ],
+              "description": "/"
+            }
+          ],
+          "default": "*",
+          "widget": "select"
+        },
+        "rhs": {
+          "$ref": "#/definitions/Operand"
+        }
+      },
+      "required": [
+        "lhs",
+        "rhs",
+        "operation"
+      ],
+      "title": "Calculation result"
+    },
+    "StatsAggregator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/AggregatorId"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "default": "stats"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string",
+          "enum": [
+            "basicstats"
+          ],
+          "default": "basicstats",
+          "widget": "hidden"
+        },
+        "config": {
+          "title": "Configuration",
+          "type": "object",
+          "properties": {
+            "period": {
+              "$ref": "#/definitions/Period"
+            },
+            "dropOriginal": {
+              "title": "Drop original",
+              "type": "boolean",
+              "default": false
+            },
+            "metrics": {
+              "title": "Metrics",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Operand"
+              },
+              "minItems": 1
+            },
+            "stats": {
+              "title": "Statistics",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "title": "Statistic name"
+              },
+              "default": [
+                "mean"
+              ],
+              "uniqueItems": true,
+              "minItems": 1
+            }
+          },
+          "required": [
+            "period",
+            "tags",
+            "stats"
+          ]
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Statistics Aggregator",
+      "visibleIf": {
+        "_type": [
+          "IStatsAggregator"
+        ]
+      }
+    },
+    "LogicAggregator": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/AggregatorId"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "logic"
+          ],
+          "default": "logic",
+          "widget": "hidden"
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "title": "Result name",
+              "type": "string"
+            },
+            "period": {
+              "$ref": "#/definitions/Period"
+            },
+            "dropOriginal": {
+              "title": "Drop original",
+              "type": "boolean",
+              "default": false
+            },
+            "operands": {
+              "title": "Operands",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Operand"
+              },
+              "minItems": 2
+            },
+            "logicOperator": {
+              "title": "Logic Operator",
+              "type": "string",
+              "oneOf": [
+                {
+                  "enum": [
+                    "AND"
+                  ],
+                  "description": "and"
+                },
+                {
+                  "enum": [
+                    "OR"
+                  ],
+                  "description": "or"
+                },
+                {
+                  "enum": [
+                    "XOR"
+                  ],
+                  "description": "xor"
+                }
+              ],
+              "default": "AND",
+              "widget": "select"
+            },
+            "negateResult": {
+              "title": "Negate result",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "required": [
+            "result",
+            "period",
+            "operands",
+            "logicOperator"
+          ]
+        },
+        "next": {
+          "$ref": "#/definitions/NextArray"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "config",
+        "next"
+      ],
+      "title": "Logic Aggregator",
+      "visibleIf": {
+        "_type": [
+          "ILogicAggregator"
+        ]
+      }
+    },
+    "NextArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "_type"
+        ],
+        "properties": {
+          "_type": {
+            "title": "Successor type",
+            "type": "string",
+            "oneOf": [
+              {
+                "enum": [
+                  "INextProcessor"
+                ],
+                "description": "Processor"
+              },
+              {
+                "enum": [
+                  "INextAggregator"
+                ],
+                "description": "Aggregator"
+              },
+              {
+                "enum": [
+                  "INextOutput"
+                ],
+                "description": "Output"
+              }
+            ],
+            "widget": "select"
+          },
+          "INextProcessor": {
+            "$ref": "#/definitions/NextProcessor"
+          },
+          "INextAggregator": {
+            "$ref": "#/definitions/NextAggregator"
+          },
+          "INextOutput": {
+            "$ref": "#/definitions/NextOutput"
+          }
+        }
+      },
+      "title": "Successors",
+      "widget": "hidden"
+    },
+    "ProcessorConfig": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true
+    },
+    "Output": {
+      "type": "object",
+      "required": [
+        "_type"
+      ],
+      "properties": {
+        "_type": {
+          "title": "Output type",
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "IGenericOutput"
+              ],
+              "description": "Generic Output"
+            },
+            {
+              "enum": [
+                "IDatabaseOutput"
+              ],
+              "description": "Database Output"
+            },
+            {
+              "enum": [
+                "IFileOutput"
+              ],
+              "description": "File Output"
+            }
+          ],
+          "default": "IDatabaseOutput",
+          "widget": "select"
+        },
+        "IGenericOutput": {
+          "$ref": "#/definitions/GenericOutput"
+        },
+        "IDatabaseOutput": {
+          "$ref": "#/definitions/DatabaseOutput"
+        },
+        "IFileOutput": {
+          "$ref": "#/definitions/FileOutput"
+        }
+      }
+    },
+    "GenericOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/OutputId"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        },
+        "config": {
+          "$ref": "#/definitions/OutputConfig"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "Generic Output",
+      "visibleIf": {
+        "_type": [
+          "IGenericOutput"
+        ]
+      }
+    },
+    "DatabaseOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/OutputId"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "default": "db"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "influxdb"
+          ],
+          "default": "influxdb",
+          "widget": "hidden"
+        },
+        "config": {
+          "$ref": "#/definitions/DatabaseConfig"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "Database Output",
+      "visibleIf": {
+        "_type": [
+          "IDatabaseOutput"
+        ]
+      }
+    },
+    "DatabaseConfig": {
+      "type": "object",
+      "properties": {
+        "database": {
+          "title": "DB name",
+          "type": "string",
+          "default": "telegraf"
+        },
+        "urls": {
+          "title": "DB Urls",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "DB Url"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "default": [
+            "http://127.0.0.1:8086"
+          ]
+        },
+        "username": {
+          "title": "Username",
+          "type": "string",
+          "default": "$INFLUX_USER"
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "default": "$INFLUX_PW"
+        }
+      }
+    },
+    "FileOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/OutputId"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "default": "file"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "file"
+          ],
+          "default": "file",
+          "widget": "hidden"
+        },
+        "config": {
+          "$ref": "#/definitions/FileConfig"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "File Output",
+      "visibleIf": {
+        "_type": [
+          "IFileOutput"
+        ]
+      }
+    },
+    "FileConfig": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "title": "Files",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "File"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "data_format": {
+          "type": "string",
+          "oneOf": [
+            {
+              "enum": [
+                "influx"
+              ],
+              "description": "influx"
+            },
+            {
+              "enum": [
+                "json"
+              ],
+              "description": "json"
+            },
+            {
+              "enum": [
+                "graphite"
+              ],
+              "description": "graphite"
+            },
+            {
+              "enum": [
+                "splunkmetric"
+              ],
+              "description": "splunkmetric"
+            }
+          ],
+          "default": "influx",
+          "title": "Format",
+          "widget": "select"
+        }
+      }
+    },
+    "OutputConfig": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true
+    },
+    "Id": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/TemplateId"
+        },
+        {
+          "$ref": "#/definitions/InputId"
+        },
+        {
+          "$ref": "#/definitions/ProcessorId"
+        },
+        {
+          "$ref": "#/definitions/AggregatorId"
+        },
+        {
+          "$ref": "#/definitions/OutputId"
+        }
+      ]
+    },
+    "TemplateId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "title": "Template Id"
+    },
+    "InputId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "title": "Id"
+    },
+    "ProcessorId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "title": "Id"
+    },
+    "AggregatorId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "title": "Id"
+    },
+    "OutputId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "title": "Id"
+    },
+    "NodeType": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+$",
+      "not": {
+        "enum": [
+          "calculation",
+          "comparison",
+          "range",
+          "stats",
+          "logic"
+        ]
+      },
+      "title": "Node type"
+    },
+    "Interval": {
+      "title": "Interval",
+      "type": "object",
+      "required": [
+        "value",
+        "timeUnit"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/TimeValue"
+        },
+        "timeUnit": {
+          "$ref": "#/definitions/TimeUnit"
+        }
+      }
+    },
+    "Period": {
+      "title": "Period",
+      "type": "object",
+      "required": [
+        "value",
+        "timeUnit"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/TimeValue"
+        },
+        "timeUnit": {
+          "$ref": "#/definitions/TimeUnit"
+        }
+      }
+    },
+    "TimeValue": {
+      "title": "Value",
+      "type": "number",
+      "minimum": 1,
+      "default": 30
+    },
+    "TimeUnit": {
+      "title": "Time unit",
+      "type": "string",
+      "oneOf": [
+        {
+          "enum": [
+            "s"
+          ],
+          "description": "Seconds"
+        },
+        {
+          "enum": [
+            "m"
+          ],
+          "description": "Minutes"
+        },
+        {
+          "enum": [
+            "h"
+          ],
+          "description": "Hours"
+        }
+      ],
+      "default": "s",
+      "widget": "select"
+    },
+    "RefString": {
+      "type": "string",
+      "enum": [
+        "ref"
+      ],
+      "default": "ref",
+      "widget": "hidden"
+    }
+  }
+}

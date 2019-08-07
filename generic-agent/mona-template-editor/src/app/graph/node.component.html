@@ -1,0 +1,44 @@
+<ng-container xmlns:svg="http://www.w3.org/1999/html">
+  <svg:rect [attr.width]="node.width" [attr.height]="height" [attr.fill]="node.options.color"
+            [style.stroke]="node.options.color">
+    <title>Select node</title>
+  </svg:rect>
+  <svg:use *ngIf="node.nodeType" x="3" [attr.width]="height" [attr.height]="height" [attr.xlink:href]="'#' + node.nodeType"/>
+
+  <svg:text x="0" y="0" class="node-title">
+    <tspan [attr.x]="height + 6" dy="1em">{{node.name}}</tspan>
+    <tspan [attr.x]="height + 6" dy="1em" [style.font-size]="'0.8rem'">{{node.type}}</tspan>
+  </svg:text>
+
+  <svg:rect [attr.y]="height + 2" [attr.width]="node.width" [attr.height]="node.height - 26" [attr.fill]="'#ffffff'"
+            [style.stroke-width]="2" [style.stroke]="'#ffffff'">
+    <title>Select node</title>
+  </svg:rect>
+</ng-container>
+
+<ng-container [ngSwitch]="node.nodeType" xmlns:svg="http://www.w3.org/1999/html">
+  <ng-container *ngSwitchCase="'input'">
+    <svg:text x="0" [attr.y]="height" app-input-node-body [inputNode]="node"/>
+
+    <svg:text *ngIf="node.type === 'cpu'" x="0" [attr.y]="2 * height" app-cpu-node-body [cpuNode]="node"/>
+    <svg:text *ngIf="node.type === 'procstat'" x="0" [attr.y]="2 * height" app-procstat-node-body [procstatNode]="node"/>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'processor'" >
+    <svg:text *ngIf="node.type === 'comparison'" x="0" [attr.y]="height" app-comparison-node-body [comparisonNode]="node"/>
+    <svg:text *ngIf="node.type === 'range'" x="0" [attr.y]="height" app-range-node-body [rangeNode]="node"/>
+    <svg:text *ngIf="node.type === 'calculation'" x="0" [attr.y]="height" app-calc-node-body [calcNode]="node"/>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'aggregator'">
+    <svg:text x="0" [attr.y]="height" app-aggregator-node-body [aggregatorNode]="node"/>
+
+    <svg:text *ngIf="node.type === 'basicstats'" x="4" [attr.y]="2 * height" app-stats-node-body [statsNode]="node"/>
+    <svg:text *ngIf="node.type === 'logic'" x="4" [attr.y]="2 * height" app-logic-node-body [logicNode]="node"/>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'output'">
+    <svg:text *ngIf="node.type === 'influxdb'" x="0" [attr.y]="height" app-db-node-body [dbNode]="node"/>
+    <svg:text *ngIf="node.type === 'file'" x="0" [attr.y]="height" app-file-node-body [fileNode]="node"/>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,17 @@
+[agent]
+
+	[[agent.telegraf]]
+		ip = "127.0.0.1"
+		configPath = "path"
+
+[central-alerting]
+
+	[[central-alerting.grafana]]
+		bearerToken = "placeholder"
+		ip = "127.0.0.1"
+
+[local-alerting]
+
+	[[local-alerting.esper]]
+		port = "10101"
+		ip = "127.0.0.1"

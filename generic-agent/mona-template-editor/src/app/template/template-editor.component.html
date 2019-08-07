@@ -1,0 +1,47 @@
+<div class="row">
+  <nav class="col-md-4 col-lg-3 col-xl-2 d-md-block d-print-none bg-light sidebar">
+    <ng-container *ngIf="(schema$ | async) as schema; else loading">
+      <div #form class="sidebar-form">
+        <sf-form [schema]="schema" [model]="savedTemplate" (onChange)="template = $event.value">
+        </sf-form>
+      </div>
+      <div class="d-flex justify-content-center my-2">
+        <button type="button" class="btn btn-primary" (click)="saveTemplate(template)">
+          <fa-icon [icon]="faSave"></fa-icon>
+          Save Template
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #loading>
+      <p>Loading JSON schema...</p>
+    </ng-template>
+  </nav>
+
+  <main role="main" class="col-md-8 col-lg-9 col-xl-10">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex d-print-none justify-content-end my-2">
+          <!--<button class="btn btn-outline-secondary" type="button">
+            <fa-icon [icon]="faFileDownload"></fa-icon>
+            Download
+          </button> -->
+          <button (click)="uploadConfig()" class="btn btn-outline-secondary ml-2" type="button">
+            <fa-icon [icon]="faFileUpload"></fa-icon>
+            Upload
+          </button>
+          <button (click)="saveTemplate(template)" class="btn btn-outline-primary ml-2" type="button" >
+            <fa-icon [icon]="faSave"></fa-icon>
+            Save
+          </button>
+        </div>
+        <app-template-graph [graph]="graph"
+                            (newEdge)="addEdge($event)"
+                            (nodeDelete)="deleteNode($event)"
+                            (deleteEdge)="deleteEdge($event)"
+                            (selectNode)="goToNode($event)">
+        </app-template-graph>
+      </div>
+    </div>
+  </main>
+</div>

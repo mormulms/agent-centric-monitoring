@@ -1,0 +1,17 @@
+[agent]
+
+	[[agent.telegraf]]
+		hostaddress = "192.168.209.202"
+		user = "ubuntu"
+		keyPath = "/home/ubuntu/ic4f.pem"
+		
+	[[agent.telegraf]]
+		hostaddress = "192.168.209.238"
+		user = "ubuntu"
+		keyPath = "/home/ubuntu/ic4f.pem"
+
+[central-alerting]
+
+	[[central-alerting.grafana]]
+		token = "Bearer eyJrIjoiMmplczUxMmY5YTRQSUpDTDVtN3hwTHl1akg1TjBjTnEiLCJuIjoiTWFwcGVyIiwiaWQiOjF9"
+		url = "http://127.0.0.1:3000/"
