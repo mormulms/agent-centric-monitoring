@@ -19,7 +19,7 @@
 
 		<junit.version>5.4.0</junit.version>
 		<esper.version>8.1.0</esper.version>
-		<log4j.version>2.11.2</log4j.version>
+		<log4j.version>2.13.3</log4j.version>
 	</properties>
 
 	<build>
