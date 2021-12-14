@@ -16,7 +16,7 @@
 
 
 		<pf4j.version>2.6.0</pf4j.version>
-		<log4j.version>2.11.2</log4j.version>
+		<log4j.version>2.16.0</log4j.version>
 		<junit.version>5.4.0</junit.version>
 		<mapper-api.version>0.0.1-SNAPSHOT</mapper-api.version>
 	</properties>
